@@ -1,41 +1,44 @@
+const getNames = (employees) => {
+    return employees.reduce((namesCount, employee) => {
+        namesCount[employee.name] = (namesCount[employee.name] || 0) + 1;
+        return namesCount;
+    }, {});
+};
+
+const getChartData = (names) => {
+    return Object.entries(names)
+        .map(([label, value]) => ({ label, value }))
+        .sort((a, b) => b.value - a.value);
+};
+
 export function getEmployeeChartContent(employeeData) {
-    const employeeChartContent = {
-        names: {
-            all: { Aneta: 2, Jan: 5, Jana: 3, Jiřina: 1, Jiří: 1, Josef: 1 },
-            male: { Jan: 5, Jiří: 1, Josef: 1 },
-            female: { Aneta: 2, Jana: 3, Jiřina: 1 },
-            femalePartTime: { Aneta: 2, Jana: 1 },
-            maleFullTime: { Jan: 3, Josef: 1 },
+    const { male, female } = employeeData.reduce(
+        (acc, employee) => {
+            if (employee.gender === "male") acc.male.push(employee);
+            else if (employee.gender === "female") acc.female.push(employee);
+            return acc;
         },
-        chartData: {
-            all: [
-                { label: "Jan", value: 5 },
-                { label: "Jana", value: 3 },
-                { label: "Aneta", value: 2 },
-                { label: "Jiřina", value: 1 },
-                { label: "Jiří", value: 1 },
-                { label: "Josef", value: 1 },
-            ],
-            male: [
-                { label: "Jan", value: 5 },
-                { label: "Jiří", value: 1 },
-                { label: "Josef", value: 1 },
-            ],
-            female: [
-                { label: "Jana", value: 3 },
-                { label: "Aneta", value: 2 },
-                { label: "Jiřina", value: 1 },
-            ],
-            femalePartTime: [
-                { label: "Jana", value: 1 },
-                { label: "Aneta", value: 2 },
-            ],
-            maleFullTime: [
-                { label: "Jan", value: 3 },
-                { label: "Josef", value: 1 },
-            ],
-        },
+        { male: [], female: [] }
+    );
+
+    const categories = {
+        all: employeeData,
+        male: male,
+        female: female,
+        femalePartTime: female.filter((employee) => employee.workload !== 40),
+        maleFullTime: male.filter((employee) => employee.workload === 40),
     };
 
-    return employeeChartContent;
+    const names = {};
+    const chartData = {};
+
+    for (const category in categories) {
+        names[category] = getNames(categories[category]);
+        chartData[category] = getChartData(names[category]);
+    }
+
+    return {
+        names,
+        chartData,
+    };
 }

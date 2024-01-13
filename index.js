@@ -1,4 +1,5 @@
 import { generateEmployeeData } from "./generateEmployeeData.js";
+import { getEmployeeChartContent } from "./getEmployeeChartContent.js";
 import { getEmployeeStatistics } from "./getEmployeeStatistics.js";
 
 function isInputDataValid(data) {
@@ -19,13 +20,13 @@ function main(dtoIn) {
     const employeeData = generateEmployeeData(dtoIn);
     const employeeStatistics = getEmployeeStatistics(employeeData);
 
-    const moctCommonNames = getEmployeeChartContent(employeeData);
+    const dtoOut = getEmployeeChartContent(employeeData);
 
     return dtoOut;
 }
 
 const dtoIn = {
-    count: "10",
+    count: "50",
     age: {
         min: 28,
         max: 31,

@@ -4,7 +4,6 @@ function getWorkloadStatistics(workloads, value) {
 
 function getMedian(array) {
     const sortedArray = array.sort((a, b) => a - b);
-    console.log(sortedArray);
 
     if (sortedArray.length % 2 === 0) {
         return (
